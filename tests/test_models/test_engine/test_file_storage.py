@@ -113,3 +113,51 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_get(self):
+        """Test specific object retrival"""
+        storage = FileStorage()
+        storage.save()
+
+        user = User(
+                name="John Doe",
+                password="12345",
+                email="test@gmail.com"
+        )
+        user.save()
+
+        retrieved_user = models.storage.get(User, user.id)
+
+        self.assertIsNotNone(retrieved_user)
+        self.assertTrue(retrieved_user is user)
+        self.assertEqual(retrieved_user.email, "test@gmail.com")
+        self.assertEqual(retrieved_user.name, "John Doe")
+
+        # Retrieve non-existent user
+        retrieved_user = models.storage.get(User, "999")
+        self.assertIsNone(retrieved_user)
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_count(self):
+        """Tests objs counts of the count method"""
+        storage = FileStorage()
+        storage._FileStorage__objects.clear()
+        storage.save()
+
+        state = State(name="Test")
+        user = User(
+                name="John Doe",
+                password="12345",
+                email="test@gmail.com"
+        )
+        state.save()
+        user.save()
+
+        # All objs count
+        count = models.storage.count()
+        self.assertEqual(count, 2)
+
+        # All user count
+        user_count = models.storage.count(User)
+        self.assertEqual(user_count, 1)

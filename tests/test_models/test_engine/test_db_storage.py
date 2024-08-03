@@ -68,21 +68,64 @@ test_db_storage.py'])
                             "{:s} method needs a docstring".format(func[0]))
 
 
+@unittest.skipIf(models.storage_t != 'db', "not testing db storage")
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_all_returns_dict(self):
         """Test that all returns a dictionaty"""
         self.assertIs(type(models.storage.all()), dict)
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_all_no_class(self):
         """Test that all returns all rows when no class is passed"""
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_new(self):
         """test that new adds an object to the database"""
 
-    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+
+
+@unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+class TestMethods(unittest.TestCase):
+    """Test new methods"""
+    def setUp(self):
+        """Sets up each test case env"""
+        models.storage.reload()
+        self.user = User(
+                name='John Doe',
+                password='12345',
+                email='john@example.com'
+        )
+        self.user.save()
+
+    def tearDown(self):
+        """Cleans up test env"""
+        models.storage.close()
+
+    def test_get(self):
+        """Tests the get method"""
+        retrieved_user = models.storage.get(User, self.user.id)
+
+        self.assertIsNotNone(retrieved_user)
+        self.assertTrue(retrieved_user is self.user)
+        self.assertEqual(retrieved_user.name, 'John Doe')
+        self.assertEqual(retrieved_user.email, 'john@example.com')
+
+        # Test non-existent user
+        retrieved_user = models.storage.get(User, 999)
+
+        self.assertIsNone(retrieved_user)
+
+    def test_count(self):
+        """Test cases for the count method"""
+        state = State(name="Test")
+        models.storage.new(state)
+        models.storage.save()
+
+        # Tests all objs count
+        count = models.storage.count()
+        self.assertEqual(count, 2)
+
+        # Tests all state objs
+        state_count = models.storage.count(State)
+        self.assertEqual(state_count, 1)
