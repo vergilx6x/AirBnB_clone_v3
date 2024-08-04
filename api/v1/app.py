@@ -18,6 +18,7 @@ def close_storage(exception):
     """Cleans up resources after each request"""
     storage.close()
 
+
 @app.errorhandler(404)
 def not_found(error):
     """Handles 404 - not found error"""
