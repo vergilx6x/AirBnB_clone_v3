@@ -9,7 +9,7 @@ from flask import abort, jsonify, request
 @app_views.route('/states', strict_slashes=False)
 def get_states():
     """
-    Retrieves the list of all State objects
+    Retrieves the list of all States
     """
     states = storage.all(State).values()
     list_states = [state.to_dict() for state in states]
@@ -30,10 +30,7 @@ def get_state(state_id):
 @app_views.route('/states/<state_id>', methods=['DELETE'],
                  strict_slashes=False)
 def delete_state(state_id):
-    """
-    Deletes a State Object
-    """
-
+    """ Deletes a State """
     state = storage.get(State, state_id)
 
     if not state:
@@ -47,9 +44,7 @@ def delete_state(state_id):
 
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
 def create_state():
-    """
-    Creates a State
-    """
+    """ Creates a State """
     data = request.get_json(silent=True)
     if not data:
         return jsonify({"error": "Not a JSON"}), 400
