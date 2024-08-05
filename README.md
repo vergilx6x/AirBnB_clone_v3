@@ -159,6 +159,6 @@ Jennifer Huang - [Github](https://github.com/jhuang10123) / [Twitter](https://tw
 
 Second part of Airbnb: Joann Vuong
 
-Third Version of Airbnb: Egba Frank [Egbafrank72@gmail.com]
+Third Version of Airbnb: Egba Frank [Egbafrank72@gmail.com] / Mohamed Amine Thami [Email]("med.work96@hotmail.com"), [Github]("https://github.com/vergilx6x"), [Twitter]("https://twitter.com/vergilx6x")
 ## License
 Public Domain. No copy write protection. 
