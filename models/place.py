@@ -73,6 +73,21 @@ class Place(BaseModel, Base):
             amenity_list = []
             all_amenities = models.storage.all(Amenity)
             for amenity in all_amenities.values():
-                if amenity.place_id == self.id:
+                # if amenity.place_id == self.id:
+                if amenity.id in amenity_ids:
                     amenity_list.append(amenity)
             return amenity_list
+
+        @amenities.setter
+        def amenities(self, value):
+            """setter attribute manages amenities I/O operations"""
+            from models.amenity import Amenity
+            if isinstance(value, Amenity):
+                if value.id not in self.amenity_ids:
+                    self.amenity_ids.append(value.id)
+            elif isinstance(value, list):
+                self.amenity_ids = [
+                        amenity.id
+                        for amenity in value
+                        if isinstance(amenity, Amenity)
+                ]

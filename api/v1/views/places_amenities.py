@@ -8,7 +8,7 @@ from os import environ
 from flask import abort, jsonify, make_response, request
 
 
-@app_views.route('places/<place_id>/amenities', methods=['GET'],
+@app_views.route('places/<place_id>/amenities',
                  strict_slashes=False)
 def get_place_amenities(place_id):
     """
@@ -19,12 +19,7 @@ def get_place_amenities(place_id):
     if not place:
         abort(404)
 
-    if environ.get('HBNB_TYPE_STORAGE') == "db":
-        amenities = [amenity.to_dict() for amenity in place.amenities]
-    else:
-        amenities = [storage.get(Amenity, amenity_id).to_dict()
-                     for amenity_id in place.amenity_ids]
-
+    amenities = [amenity.to_dict() for amenity in place.amenities]
     return jsonify(amenities)
 
 
@@ -44,17 +39,12 @@ def delete_place_amenity(place_id, amenity_id):
     if not amenity:
         abort(404)
 
-    if environ.get('HBNB_TYPE_STORAGE') == "db":
-        if amenity not in place.amenities:
-            abort(404)
-        place.amenities.remove(amenity)
-    else:
-        if amenity_id not in place.amenity_ids:
-            abort(404)
-        place.amenity_ids.remove(amenity_id)
+    if amenity not in place.amenities:
+        abort(404)
+    place.amenities.remove(amenity)
 
     storage.save()
-    return make_response(jsonify({}), 200)
+    return jsonify({})
 
 
 @app_views.route('/places/<place_id>/amenities/<amenity_id>', methods=['POST'],
@@ -73,16 +63,10 @@ def post_place_amenity(place_id, amenity_id):
     if not amenity:
         abort(404)
 
-    if environ.get('HBNB_TYPE_STORAGE') == "db":
-        if amenity in place.amenities:
-            return make_response(jsonify(amenity.to_dict()), 200)
-        else:
-            place.amenities.append(amenity)
+    if amenity in place.amenities:
+        return jsonify(amenity.to_dict())
     else:
-        if amenity_id in place.amenity_ids:
-            return make_response(jsonify(amenity.to_dict()), 200)
-        else:
-            place.amenity_ids.append(amenity_id)
+        place.amenities.append(amenity)
 
     storage.save()
-    return make_response(jsonify(amenity.to_dict()), 201)
+    return jsonify(amenity.to_dict()), 201
