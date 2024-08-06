@@ -99,7 +99,7 @@ def update_place(place_id):
     if not place:
         abort(404)
 
-    data = request.get_json()
+    data = request.get_json(silent=True)
     if not data:
         return jsonify({"error": "Not a JSON"}), 400
 
@@ -120,14 +120,14 @@ def places_search():
     Retrieves all Place objects depending of the JSON in the body
     of the request
     """
-    data = request.get_json()
-    if not data:
+    data = request.get_json(silent=True)
+    if data is None:
         return jsonify({"error": "Not a JSON"}), 400
 
     if data:
-        states = data.get('states', None)
-        cities = data.get('cities', None)
-        amenities = data.get('amenities', None)
+        states = data.get('states')
+        cities = data.get('cities')
+        amenities = data.get('amenities')
 
     if not data or (
             not states and
