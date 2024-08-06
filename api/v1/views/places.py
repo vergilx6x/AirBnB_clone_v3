@@ -144,9 +144,9 @@ def places_search():
         for state in states_obj:
             if state:
                 for city in state.cities:
-                    # if city:
-                    for place in city.places:
-                        list_places.append(place)
+                    if city:
+                        for place in city.places:
+                            list_places.append(place)
 
     if cities:
         city_obj = [storage.get(City, c_id) for c_id in cities]
