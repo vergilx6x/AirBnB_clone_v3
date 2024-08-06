@@ -64,7 +64,7 @@ def update_amenity(amenity_id):
     if not amenity:
         abort(404)
 
-    data = request.get_json()
+    data = request.get_json(silent=True)
 
     if not data:
         return jsonify({"error": "Not a JSON"}), 400
